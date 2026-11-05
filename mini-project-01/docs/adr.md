@@ -16,10 +16,18 @@
 
 예측 시점에 사용할 수 없거나 누수가 발생할 수 있는 특성이 있습니다.
 
-- **검토한 선택지:** ___ (예: `casual`·`registered` 포함 여부, `atemp` 포함 여부, `windspeed` 제거 여부)
-- **최종 선택(사용·제외한 특성):** ___
-- **선택 근거(누수 확인, 예측 시점, 상관관계 등):** ___
-- **감수한 한계 또는 추후 확인할 점:** ___
+- **검토한 선택지:** casual, registered, atemp 제외 windspeed 포함  (예: `casual`·`registered` 포함 여부, `atemp` 포함 여부, `windspeed` 제거 여부)
+- **최종 선택(사용·제외한 특성):** "hr",
+    "season",
+    "holiday",
+    "weekday",
+    "weathersit",
+    "temp",
+    "hum",
+    "windspeed",
+    "workingday"
+- **선택 근거(누수 확인, 예측 시점, 상관관계 등):** casual, registered 는 cnt에 포함되므로 예측시점에 cnt가 유추되므로 데이터 누수, atemp는 temp와 상관관계가 높아서 제외
+- **감수한 한계 또는 추후 확인할 점:** temp와 상관관계가 높은 atemp는 제외했는데 이렇게되면 atemp가 주는 미세한 영향은 예측에서 누락될수 있습니다.
 
 **분석 근거:** `01_regression_data_analysis.md`
 
@@ -29,11 +37,18 @@
 
 서로 다른 회귀 모델 및 설정 중 하나를 최종 모델로 선택해야 합니다.
 
-- **비교한 모델·설정:** ___
-- **최종 선택한 모델·설정:** ___
-- **선택 근거(Validation MAE, 과대적합 가능성, 시간대별 오류 등):** ___
-- **선택 모델의 장점:** ___
-- **남아 있는 한계 또는 개선 방향:** ___
+- **비교한 모델·설정:**   
+DecisionTree max_depth 3,
+DecisionTree max_depth 6,
+DecisionTree max_depth 12,
+RandomForest A {"n_estimators": 50, "max_depth": 10}, 
+RandomForest B {"n_estimators": 100, "max_depth": 15},
+LinearRegression,
+DummyRegressor
+- **최종 선택한 모델·설정:** RandomForest B {"n_estimators": 100, "max_depth": 15}
+- **선택 근거(Validation MAE, 과대적합 가능성, 시간대별 오류 등):** Valid MAE가 가장 낮게 나왔고 다른 수치또한 다른 모델보다 전체적으로 좋게 나왔습니다, 검증-훈련 mae 차이가 비교적 큰편이라 과대적합 가능성이 있습니다. 훈련, 검증 시간대가 달라서 그 시간대의 영향을 받아 예측과 결과가 달라졌을수 있습니다.
+- **선택 모델의 장점:** Valid MAE가 가장 작습니다.
+- **남아 있는 한계 또는 개선 방향:** 학습할때 기간과 테스트의 기간이 달라서 예측결과에 영향을 주었을것입니다. 날짜 순서는 유지한채로 각 train, valid, test 데이터의 날짜 구간을 섞어서 개선을 해볼수 있겠습니다.
 
 **분석 근거:** `01_regression_model_analysis.md`
 
