@@ -62,10 +62,11 @@ DummyRegressor
 
 구매 세션이 전체의 약 15%뿐인 불균형 데이터이므로, Accuracy만으로 구매 클래스를 얼마나 잘 예측하는지 판단하기 어렵습니다.
 
-- **검토한 선택지:** ___ (예: Accuracy, 구매 클래스 F1, Precision, Recall)
-- **최종 선택한 주 지표와 보조 지표:** ___
-- **선택 근거(DummyClassifier와 LogisticRegression 결과, FP·FN 등):** ___
-- **감수한 한계 또는 추후 확인할 점:** ___
+- **검토한 선택지:** 구매 클래스 F1 (예: Accuracy, 구매 클래스 F1, Precision, Recall)
+- **최종 선택한 주 지표와 보조 지표:** 주 지표: F1, 보조지표: Precision, Recall
+- **선택 근거(DummyClassifier와 LogisticRegression 결과, FP·FN 등):** FP와 FN의 차이가 많이 커서 하나의 수치로 볼수있는 F1을 선택했습니다. 
+- **감수한 한계 또는 추후 확인할 점:** Precision, Recall 중에 더 중요한것이 있을수 있는데 F1를 지표로 썼을때 둘다 동일한 비중으로 사용하는 한계가 있습니다. 추후에 Precision, Recall 값을 확인해봐야합니다.
+또 F1은 임계값에 따라 값이 달라지므로 예측결과가 모델의 성능의 영향인지 임계값에 영향인지 구분이 어려우므로 임계값을 달리했을때의 예측값도 비교해봐야합니다.
 
 **분석 근거:** `02_classification_data_analysis.md`, `02_classification_model_analysis.md`
 
@@ -75,10 +76,10 @@ DummyRegressor
 
 기본 손실 함수로 학습한 MLP-A와 클래스 가중 손실을 적용한 MLP-B를 비교하고, 구매 확률을 0/1로 구분하는 임계값(0.3·0.5·0.7)을 선택해야 합니다.
 
-- **검토한 선택지:** ___ (MLP-A / MLP-B의 학습 결과, 임계값 0.3·0.5·0.7)
-- **최종 선택한 MLP 설정·임계값·재학습 에포크:** ___
-- **선택 근거(Validation F1, Precision·Recall, FP·FN 및 가중 손실의 영향):** ___
-- **LogisticRegression과 비교했을 때 선택한 MLP의 특징:** ___
-- **감수한 한계 또는 추후 개선 방향:** ___
+- **검토한 선택지:** MLP-A 0.5, MLP-B 0.5 (MLP-A / MLP-B의 학습 결과, 임계값 0.3·0.5·0.7)
+- **최종 선택한 MLP 설정·임계값·재학습 에포크:** LP-B 0.5
+- **선택 근거(Validation F1, Precision·Recall, FP·FN 및 가중 손실의 영향):** F1 수치가 가장 높게나와서
+- **LogisticRegression과 비교했을 때 선택한 MLP의 특징:** 구매여부 비율에 따른 영향을 받지않도록 가중치를 주었기때문에 구매비율 영향을 받지 않게 되었습니다.
+- **감수한 한계 또는 추후 개선 방향:** 전체적인 수치가 낮더라도 FP, FN 중에 하나가 제일 낮은것이 더 원하는 예측일 수도 있습니다. 예를들면 예측하는 목적이 구매에게 혜택을 주는것이라면 구매자 혜택이 누락되는것이 더 치명적이므로 FN이 가장 낮은 모델을 선택 할 것입니다.
 
 **분석 근거:** `02_classification_model_analysis.md`

@@ -9,52 +9,52 @@
 
 - **주 평가 지표:** MAE
 - **보조 지표:** RMSE, R²
-- **모델 비교에 사용한 데이터:** ___
-- **MAE를 주요 지표로 선택한 이유:** ___
+- **모델 비교에 사용한 데이터:** 훈련용 데이터, 검증용 데이터로 모델을 학습하고 테스트 데이터의 MAE로 최종 모델을 결정함
+- **MAE를 주요 지표로 선택한 이유:** 예측값에서 실제값 뺀 차이를 평균 낸값으로 시간대마다 차이를 해석하기가 쉽기때문입니다.
 
 ## 2. 모델별 실험 결과 (CP-04~CP-06)
 
 대표 설정별 Train MAE / Validation MAE를 기록합니다. 전체 실험 결과는 Notebook의 `results_df`에서 확인합니다.
 
-- **DummyRegressor (mean):** Train ___ / Validation ___
-- **LinearRegression:** Train ___ / Validation ___
-- **DecisionTreeRegressor (`max_depth=___`):** Train ___ / Validation ___
-- **RandomForestRegressor (설정 ___):** Train ___ / Validation ___
+- **DummyRegressor (mean):** Train 119.572 / Validation 194.109
+- **LinearRegression:** Train 60.128 / Validation 105.863
+- **DecisionTreeRegressor (`max_depth=12`):** Train 36.653 / Validation 99.815
+- **RandomForestRegressor (설정 {트리 개수: 100, 최대 깊이: 15}):** Train 27.178 / Validation 91.425
 
 **실험에서 발견한 점**
 
-- **Decision Tree 깊이 변화에 따른 성능:** ___
-- **Random Forest 두 설정의 차이:** ___
-- **Train·Validation 성능 차이에서 관찰한 현상:** ___ (`001_data_analysis`의 2절 `cnt` 평균 차이와 연결해 작성)
+- **Decision Tree 깊이 변화에 따른 성능:** 깊이가 3일때보다 6일때 MAE, RMSE, R2 지표가 더 나은 값을 보입니다.
+- **Random Forest 두 설정의 차이:** 결정 트리 개수는 A 50에서 B 100으로 B가 50 더 크고  최대 깊이는 A 10에서 B 15로 B가 5 더 큽니다.
+- **Train·Validation 성능 차이에서 관찰한 현상:** Train 성능보다 Validation 성능이 떨어지는것을 MAE, RMSE, R2 지표 모두에서 확인 할 수 있습니다. (`001_data_analysis`의 2절 `cnt` 평균 차이와 연결해 작성)
 
 ## 3. 예측 오류 분석 (CP-07)
 
-- **비교한 후보 모델 2개(Validation MAE 상위 2개):** ___ / ___
-- **실제값·예측값 그래프에서 관찰한 점:** ___
-- **시간대별 MAE가 큰 구간:** ___
-- **모델이 상대적으로 잘 예측하지 못하는 상황:** ___
+- **비교한 후보 모델 2개(Validation MAE 상위 2개):** RandomForestRegressor(B) / RandomForestRegressor(A)
+- **실제값·예측값 그래프에서 관찰한 점:** A,B 모델 둘다 실제 대여수가 클수록 예측과의 차이가 커집니다. A모델보다는 B모델이 전체적으로 넓게 퍼져있지 않고 특히 200~400 구간에서 A모델보다 실제 대여수에 가깝게 예측했습니다.
+- **시간대별 MAE가 큰 구간:** 17
+- **모델이 상대적으로 잘 예측하지 못하는 상황:** 실제 대여수가 클 때
 - **(선택) 특성 중요도에서 확인한 점:** ___
 
 **분석:** 이 오류가 최종 모델 선택에 어떤 영향을 주었는지 작성합니다.  
-___
+
 
 ## 4. 최종 모델과 Test 평가 (CP-08)
 
-- **Test 확인 전에 선택한 최종 모델·설정:** ___
-- **재학습에 사용한 데이터(Train + Validation) 크기:** ___행
-- **Test MAE:** ___
-- **Test RMSE:** ___
-- **Test R²:** ___
-- **모델 저장·재로딩 및 예측 결과:** ___
+- **Test 확인 전에 선택한 최종 모델·설정:** B , 트리 개수: 100, 트리의 최대 깊이: 15
+- **재학습에 사용한 데이터(Train + Validation) 크기:** 14,755행
+- **Test MAE:** 87.198
+- **Test RMSE:** 125.582
+- **Test R²:** 0.659
+- **모델 저장·재로딩 및 예측 결과:** 저장 전후 예측 일치: True / 예상 대여량: 618	
 
 **해석:** 최종 Test 결과로 알게 된 점을 1~2문장으로 작성합니다.  
-___
+RSME가 125라서 MAE 87보다 큽니다. RSME값이 크다는것은 오차가 크게 나타날때가 있다는 의미입니다. MAE값 자체도 Train에서는 27, Validation 에서는 91 인데 Train에만 낮은 값을 보이고있어서 데이터에따라 편차가 크다는것을 알 수 있습니다. 데이터의 시간에 따른 차이에 따라 그런 차이를 만드는지 의심해 볼 수 있습니다.
 
 > Test는 최종 평가용입니다. 서로 다른 데이터 집합에서 나온 점수를 직접 개선율로 비교하지 않습니다.
 
 ## 5. 실험 요약
 
-- **가장 중요한 실험 결과:** ___
-- **남아 있는 모델의 한계:** ___
+- **가장 중요한 실험 결과:** RandomForest 방식의 B 모델의 MAE가 가장 낮았습니다. 그러나 Train MAE, RSME에 비해서 Validation, Test의 MAE, RSME이 지표가 나쁘게 나오는 것으로보아 데이터간의 차이로 인해 성능 저하가 발생하는 것으로 보입니다.
+- **남아 있는 모델의 한계:** 데이터의 시간에 따라서 데이터가 달라져서 실제 검증에서는 성능 저하가 나타나는 것으로 보입니다.
 
 > 최종 모델을 **왜 선택했는지**는 `adr.md`의 의사결정 ②에 작성합니다.
