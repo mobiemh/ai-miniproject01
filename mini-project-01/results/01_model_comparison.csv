@@ -1,0 +1,8 @@
+Model,Train MAE,Train RMSE,Train R2,Valid MAE,Valid RMSE,Valid R2,Gap (Valid-Train MAE)
+RandomForestRegressor(B),27.178,40.402,0.93,91.425,123.87,0.692,64.247
+DecisionTreeRegressor(max_depth=12),36.653,58.24,0.854,99.815,133.686,0.641,63.162
+RandomForestRegressor(A),43.43,61.474,0.837,103.216,132.676,0.646,59.786
+LinearRegression,60.128,81.01,0.717,105.863,146.015,0.571,45.735
+DecisionTreeRegressor(max_depth=6),64.289,87.794,0.668,123.726,150.653,0.544,59.438
+DecisionTreeRegressor(max_depth=3),81.61,107.864,0.499,134.941,174.091,0.391,53.332
+DummyRegressor,119.572,152.4,0.0,194.109,253.892,-0.296,74.538
